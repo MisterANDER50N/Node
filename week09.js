@@ -6,6 +6,9 @@ app.set('port', (process.env.PORT || 8080));
 
 app.use(express.static(__dirname + '/public'));
 
+app.get('/', function (req, res) {
+  res.send('hello world')
+})
 
 app.set('views', __dirname + '/views');
 app.set('view engine', 'ejs');
