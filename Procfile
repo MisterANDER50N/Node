@@ -1,1 +1,1 @@
-web: node postalRate.js
+web: node index.js
