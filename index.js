@@ -35,7 +35,7 @@ function postage(req, res){
 	var params = {weight: weight, result: result};
 			console.log(result);
 
-	res.render('result', params);
+	res.render('index', params);
 }
 
 function stamped(res, weight, result){
