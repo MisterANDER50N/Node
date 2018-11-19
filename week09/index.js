@@ -9,8 +9,6 @@ app.use(express.static('public'));
 app.set('views', 'views');
 app.set('view engine', 'ejs');
 
-
-
 app.get('/math', postage);
 
 app.listen(app.get('port'), function() {
