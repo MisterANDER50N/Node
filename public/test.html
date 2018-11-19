@@ -1,21 +1,20 @@
 <!DOCTYPE html>
 <html>
 <head>
-	<title>Prove 09</title>
+	<title>Postal Rate</title>
 </head>
 <body>
-	<h1>09 Prove : Assignment - Postal Rate Calculator</h1>
-	<form action="/getRate" method="get">
-		Mail Type: 
-		<select name="mailType">
-			<option>Letters (Stamped)1,4</option>
-			<option>Letters (Metered)1,4</option>
-			<option>Large Envelopes (Flats)2</option>
-			<option>First-Class Package Service—Retail</option>
-		</select>
-		Weight: <input type="number" step="0.5" name="weight">
-		<br>
-		<input type="submit" value="Get rate">
+	<h1>Postal Rate</h1>
+	<form action="/math" method="get">
+		<input type="text" placeholder="Weight" name="wt"></br>
+		
+			<input type='radio' name="mail" value='stamped'>Stamped Letters</br>
+			<input type='radio' name="mail" value='metered'>Metered Letters</br>
+			<input type='radio' name="mail" value='envelopes'>Large Envelopes</br>
+			<input type='radio' name="mail" value='package'>First-Class Package</br>
+
+		<br><br>
+		<input type="submit" value="Get Result">
 
 	</form>
 </body>

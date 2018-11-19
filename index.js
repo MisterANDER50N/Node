@@ -1,85 +1,118 @@
-var express = require('express');
-var app = express();
-const mailTypes = ["Letters (Stamped)1,4", "Letters (Metered)1,4", "Large Envelopes (Flats)2", "First-Class Package Service—Retail"]
-const rates = {
-  "Letters (Stamped)1,4": {
-    "1": 0.5,
-    "2": 0.71,
-    "3": 0.92,
-    "3.5": 1.13
-  },
-  "Letters (Metered)1,4": {
-    "1": 0.47,
-    "2": 0.68,
-    "3": 0.89,
-    "3.5": 1.1
-  },
-  "Large Envelopes (Flats)2": {
-    "1": 1,
-    "2": 1.21,
-    "3": 1.42,
-    "4": 1.63,
-    "5": 1.84,
-    "6": 2.05,
-    "7": 2.26,
-    "8": 2.47,
-    "9": 2.68,
-    "10": 2.89,
-    "11": 3.1,
-    "12": 3.31,
-    "13": 3.52
-  },
-  "First-Class Package Service—Retail": {
-    "1": 3.5,
-    "2": 3.5,
-    "3": 3.5,
-    "4": 3.5,
-    "5": 3.75,
-    "6": 3.75,
-    "7": 3.75,
-    "8": 3.75,
-    "9": 4.1,
-    "10": 4.45,
-    "11": 4.8,
-    "12": 5.15,
-    "13": 5.5
-  }
-}
+const express = require('express');
+const app = express();
 
-app.set('port', (process.env.PORT || 5000));
+
+app.set('port', (process.env.PORT || 8080));
 
 app.use(express.static(__dirname + '/public'));
 
-// views is directory for all template files
 app.set('views', __dirname + '/views');
 app.set('view engine', 'ejs');
 
-app.get('/getRate', handleRate);
+app.get('/math', postage);
 
 app.listen(app.get('port'), function() {
-	console.log('Node app is running on port', app.get('port'));
+	console.log('server running on port', app.get('port'))
 });
 
-function handleRate(request, response) {
-	var mailType = request.query.mailType;
-	var weight = Number(request.query.weight);
+function postage(req, res){
+	
+	var weight = Number(req.query.wt);
+	var mail = req.query.mail;
+	var result = 0;
+	
+	mail = mail.toLowerCase();
+	
+	if (mail == "stamped")
+		result = stamped(res, weight, result);
+	if (mail == 'metered')
+		result = metered(res, weight, result);
+	if (mail == "envelope")
+		result = envelope(res, weight, result);
+	if (mail == 'package')
+		result = package(res, weight, result);
+	
+	var params = {weight: weight, result: result};
+			console.log(result);
 
-	// TODO: Here we should check to make sure we have all the correct parameters
-
-	calculateRate(response, mailType, weight);
+	res.render('result', params);
 }
 
-function calculateRate (response, mailType, weight) {
-	var postage = 0;
-	postage = rates[mailType][weight];
+function stamped(res, weight, result){
+	console.log('entered stamped');
+	if(weight <= 1)
+			result = .5;
+		else if(weight <= 2)
+			result = .71;
+		else if(weight <= 3)
+			result = .92;
+		else if(weight <= 3.5)
+			result = 1.13;
+		else
+			result = envelope(res, weight, result);
+		console.log(result);
+		return result;
+}
 
-	if (!postage) {postage = "There is no rate for the given selection";}
+function metered(res, weight, result){
+	if(weight <= 1)
+			result = .47;
+		else if(weight <= 2)
+			result = .68;
+		else if(weight <= 3)
+			result = .89;
+		else if(weight <= 3.5)
+			result = 1.1;
+		else
+			result = envelope(res, weight, result);
+	return result;
+}
 
-	// Set up a JSON object of the values we want to pass along to the EJS result page
-	var params = {mailType: mailType, weight: weight, postage: postage};
+function envelope(res, weight, result){
+		if(weight <= 1)
+			result = 1;
+		else if(weight <= 2)
+			result = 1.21;
+		else if(weight <= 3)
+			result = 1.42;
+		else if(weight <= 4)
+			result = 1.63;
+		else if(weight <= 5)
+			result = 1.84;
+		else if(weight <= 6)
+			result = 2.05;
+		else if(weight <= 7)
+			result = 2.26;
+		else if(weight <= 8)
+			result = 2.47;
+		else if(weight <= 9)
+			result = 2.68;
+		else if(weight <= 10)
+			result = 2.89;
+		else if(weight <= 11)
+			result = 3.1;
+		else if(weight <= 12)
+			result = 3.31;
+		else if(weight <= 13)
+			result = 3.52;
+				return result;
+}
 
-	// Render the response, using the EJS page "result.ejs" in the pages directory
-	// Makes sure to pass it the parameters we need.
-	response.render('pages/result', params);
-
+function package(res, weight, result){
+		if(weight <= 4)
+			result = 3.5;
+		
+		else if(weight <= 8)
+			result = 3.75;
+		else if(weight <= 9)
+			result = 4.1;
+		else if(weight <= 10)
+			result = 4.45;
+		else if(weight <= 11)
+			result = 4.8;
+		else if(weight <= 12)
+			result = 5.15;
+		else if(weight <= 13)
+			result = 5.5;
+				return result;
 }
